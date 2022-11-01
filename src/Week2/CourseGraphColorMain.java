@@ -5,11 +5,11 @@ import java.util.*;
 /**
  * 1. init the Map. The key is the code of the point, the list is the list of points and lines
  * Map<Integer, ArrayList<Integer>> map = new HashMap<>();
- * {1=[2, 4, 5], 2=[1, 5, 6], 3=[4, 5], 4=[1, 3, 6], 5=[1, 2, 3, 6], 6=[2, 4, 5]}
+ * {1=[2, 3, 4, 5, 6], 2=[1, 3, 4, 5, 6, 7], 3=[1, 2, 4, 5, 6, 7], 4=[1, 2, 3, 5, 6, 7], 5=[1, 2, 3, 4, 6, 7], 6=[1, 2, 3, 4, 5, 7], 7=[2, 3, 4, 5, 6]}
  * <p>
  * 2. sort map by lines number
  * map.sortBylinesNumber();
- * {5=[1, 2, 3, 6], 1=[2, 4, 5], 6=[2, 4, 5], 2=[1, 5, 6], 3=[4, 5], 4=[1, 3, 6]}
+ * {2=[1, 3, 4, 5, 6, 7], 1=[2, 3, 4, 5, 6], 7=[2, 3, 4, 5, 6], 3=[1, 2, 4, 5, 6, 7], 4=[1, 2, 3, 5, 6, 7], 5=[1, 2, 3, 4, 6, 7], 6=[1, 2, 3, 4, 5, 7]}
  * <p>
  * 3. check point if the point can use one color, use it and remove it.
  * while(map.notEmpty()) {
@@ -20,61 +20,77 @@ import java.util.*;
  *         }
  *     }
  * }
- * {5=[1, 2, 3, 6], 1=[2, 4, 5], 6=[2, 4, 5], 2=[1, 5, 6], 3=[4, 5], 4=[1, 3, 6]}
- * {1=[2, 4, 5], 6=[2, 4, 5], 2=[1, 5, 6], 3=[4, 5]}
- * {2=[1, 5, 6]}
- * result: {1=1, 2=2, 3=1, 4=0, 5=0, 6=1}
- * <p>
- * So
- 1: L, S
- 2: UE, C, P
- 3: GE
+ * {3=[1, 2, 4, 5, 6, 7], 1=[2, 3, 4, 5, 6], 7=[2, 3, 4, 5, 6], 4=[1, 2, 3, 5, 6, 7], 5=[1, 2, 3, 4, 6, 7], 6=[1, 2, 3, 4, 5, 7]}
+ * {4=[1, 2, 3, 5, 6, 7], 1=[2, 3, 4, 5, 6], 7=[2, 3, 4, 5, 6], 5=[1, 2, 3, 4, 6, 7], 6=[1, 2, 3, 4, 5, 7]}
+ * {5=[1, 2, 3, 4, 6, 7], 1=[2, 3, 4, 5, 6], 7=[2, 3, 4, 5, 6], 6=[1, 2, 3, 4, 5, 7]}
+ * {6=[1, 2, 3, 4, 5, 7], 1=[2, 3, 4, 5, 6], 7=[2, 3, 4, 5, 6]}
+ * {1=[2, 3, 4, 5, 6], 7=[2, 3, 4, 5, 6]}
+ * {1=5, 2=0, 3=1, 4=2, 5=3, 6=4, 7=5}
+
+ so
+ q1: The least is 6
+ q2:
+ 1: S2
+ 2: S1, S3
+ 3: S4
+ 4: S5
+ 5: S6
+ 7: S7
  */
-public class GraphColorMain {
+public class CourseGraphColorMain {
     public static <string> void main(String[] args) {
 
-
-        ArrayList<String> UE = new ArrayList<>() {{
-            add("Sineman");
-            add("Limitson");
-            add("Axiomus");
-            add("Functionini");
+        ArrayList<String> S1 = new ArrayList<>() {{
+            add("Math");
+            add("English");
+            add("Biology");
+            add("Chemistry");
         }};
-        ArrayList<String> GE = new ArrayList<>(){{
-            add("Graphian");
-            add("Vectorades");
-            add("Functionini");
-            add("Infinitescu");
+        ArrayList<String> S2 = new ArrayList<>(){{
+            add("Math");
+            add("English");
+            add("Computer Science");
+            add("Geography");
         }};
-        ArrayList<String> C = new ArrayList<>() {{
-           add("Lemmeau");
-           add("Randomov");
-           add("Proofizaki");
+        ArrayList<String> S3 = new ArrayList<>() {{
+           add("Biology");
+           add("Psychology");
+           add("Geography");
+           add("Spanish");
         }};
-        ArrayList<String> L = new ArrayList<>() {{
-            add("Van Sum");
-            add("Sineman");
-            add("Lemmeau");
+        ArrayList<String> S4 = new ArrayList<>() {{
+            add("Biology");
+            add("Computer Science");
+            add("History");
+            add("French");
         }};
-        ArrayList<String> S = new ArrayList<>() {{
-            add("Graphian");
-            add("Randomov");
-            add("Vectorades");
-            add("Limitson");
+        ArrayList<String> S5 = new ArrayList<>() {{
+            add("English");
+            add("Psychology");
+            add("Computer Science");
+            add("History");
         }};
-        ArrayList<String> P = new ArrayList<>() {{
-            add("Vectorades");
-            add("Van Sum");
-            add("Parabolton");
+        ArrayList<String> S6 = new ArrayList<>() {{
+            add("Psychology");
+            add("Chemistry");
+            add("Computer Science");
+            add("French");
+        }};
+        ArrayList<String> S7 = new ArrayList<>() {{
+            add("Psychology");
+            add("Geography");
+            add("History");
+            add("Spanish");
         }};
 
         ArrayList<ArrayList<String>> list = new ArrayList<>(){{
-            add(UE);
-            add(GE);
-            add(C);
-            add(L);
-            add(S);
-            add(P);
+            add(S1);
+            add(S2);
+            add(S3);
+            add(S4);
+            add(S5);
+            add(S6);
+            add(S7);
         }};
 
 
@@ -142,6 +158,7 @@ public class GraphColorMain {
              * ---- end sort
              */
 
+            System.out.println(sortMap);
             for (Integer key: sortMap.keySet()) {
                 ArrayList<Integer> list = sortMap.get(key);
 
