@@ -62,6 +62,7 @@ s7 penalty = 1 + 2 = 3
 all penalty = 2+2+2+2+2+2+3 = 15
 select this one
 
+
 Second iteration: select one course put it on another slot
 
 | day1.1     | day1.2         | day2.1  | day2.2            | day3.1           | day3.2     | day4.1 | day4.2   |
@@ -76,3 +77,33 @@ s6 = 2
 s7 = 1 + 1 = 2
 all = 14
 select this one
+
+
+Calculate penalty for the current timetable.
+And move one course, satisfy hard contract as a list, no student's exam conflicts.
+If this list is empty, return.
+Iteration all item in this list, if anyone's penalty less than globalPenalty, use this as globalPenalty.
+```
+globalPenalty = 999;
+globalTimetable = null;
+function iteration(timetable) {
+    
+    newPenalty = penalty(timetable);
+    if(newPenalty <= globalPenalty) {
+        globalPenalty   = newPenalty;
+        globalTimetable = timetable;
+    } else {
+        return ;
+    }
+    
+    newTimetableList = moveOneCourseSatisfyHardcontract();
+    if(newTimetableList.isEmpty()) {
+      return ;
+    }
+    
+    foreach(newTimetableList as newTimetable) {
+        interation(newTimetable);
+    }
+}
+```
+
