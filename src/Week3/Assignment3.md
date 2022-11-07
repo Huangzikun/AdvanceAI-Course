@@ -25,12 +25,12 @@ Calculate the quality of the generated timetable.
 
 s1 penalty = 2 + 2 = 4
 s2 penalty = 2 + 2 = 4
-s3 penalty = 2
-s4 penalty = 1 + 2 = 3
-s5 penalty = 1
-s6 penalty = 1
-s7 penalty = 2
-all penalty = 4+4+2+3+1+1+2 = 17
+s3 penalty = 1 + 2 = 3
+s4 penalty = 2 + 1 + 1 = 4
+s5 penalty = 2 + 1 = 3
+s6 penalty = 1 + 1 + 1 = 3
+s7 penalty = 1 + 2 = 3
+all penalty = 4+4+3+4+3+3+3=24
 
 First iteration: select one course put it on another slot
 
@@ -40,42 +40,41 @@ First iteration: select one course put it on another slot
 
 s1 penalty = 2 + 2 = 4
 s2 penalty = 2 + 2 = 4
-s3 penalty = 2
-s4 penalty = 2
-s5 penalty = 1 + 1 = 2
-s6 penalty = 1 + 1 = 2
-s7 penalty = 1 + 2 = 3
-all penalty = 4+4+2+2+1+2+3 = 18
+s3 penalty = 1 + 2 = 3
+s4 penalty = 1 + 2 + 1 = 4
+s5 penalty = 2 + 1 = 3
+s6 penalty = 1 + 1 + 1 = 3
+s7 penalty = 1 + 1 + 2 = 4
+all penalty = 4+4+3+4+3+3+4 = 25
 so don't select
 
 | day1.1 | day1.2         | day2.1  | day2.2            | day3.1           | day3.2     | day4.1          | day4.2   |
 |--------|----------------|---------|-------------------|------------------|------------|-----------------|----------|
 |        | English,French | Biology | Chemistry,History | Computer Science | Geography  | Psychology,Math | Spanish  |
 
-s1 penalty = 2
-s2 penalty = 2
-s3 penalty = 2
-s4 penalty = 2
-s5 penalty = 1 + 1 = 2
-s6 penalty = 1 + 1 = 2
+s1 penalty = 1 + 2 = 3           
+s2 penalty = 1 + 2 = 3
+s3 penalty = 1 + 2 = 3
+s4 penalty = 2 + 1 + 1 = 4
+s5 penalty = 2 + 1 = 3
+s6 penalty = 1 + 1 + 1 = 3
 s7 penalty = 1 + 2 = 3
-all penalty = 2+2+2+2+2+2+3 = 15
+all penalty = 3+3+3+4+3+3+3=22
 select this one
-
 
 Second iteration: select one course put it on another slot
 
 | day1.1     | day1.2         | day2.1  | day2.2            | day3.1           | day3.2     | day4.1 | day4.2   |
 |------------|----------------|---------|-------------------|------------------|------------|--------|----------|
 | Psychology | English,French | Biology | Chemistry,History | Computer Science | Geography  | Math   | Spanish  |
-s1 = 2
-s2 = 2
-s3 = 1 + 1 = 2
-s4 = 2
-s5 = 2
-s6 = 2
-s7 = 1 + 1 = 2
-all = 14
+s1 penalty = 1 + 2 = 3           
+s2 penalty = 1 + 2 = 3
+s3 penalty = 1 + 1 = 2
+s4 penalty = 2 + 1 + 1 = 4
+s5 penalty = 1 + 1 = 2
+s6 penalty = 2 + 1 = 3
+s7 penalty = 1 + 1 = 2
+all penalty = 3+3+2+4+2+3+2=19
 select this one
 
 
