@@ -1,9 +1,11 @@
 package assignment6;
 
-import java.lang.reflect.Array;
+import Tool.Tool;
+
+import java.io.IOException;
 import java.util.*;
 
-public class LAMain {
+public class SAMain {
 
     private static final Map<Integer, Map<Integer, Integer>> tspMap = new HashMap<>() {{
         put(1, new HashMap<>() {{
@@ -50,18 +52,19 @@ public class LAMain {
         }});
     }};
 
-    public static <string> void main(String[] args) {
+    public static <string> void main(String[] args) throws IOException {
 
         Double DELTA = 0.95;
         Double T = 1000.0;
-        Integer END = 150;
-        Integer outSearchTime = 1000;
+        Integer outSearchTime = 100;
         Integer inSearchTime = 50;
 
         /**
          * default
          */
         ArrayList<Integer> bestPath = new ArrayList<>();
+        ArrayList<Integer> bestList = new ArrayList<>();
+        ArrayList<Integer> searchList = new ArrayList<>();
 
         bestPath.add(1);
         bestPath.add(2);
@@ -69,20 +72,33 @@ public class LAMain {
         bestPath.add(4);
         bestPath.add(5);
         bestPath.add(6);
-
         Integer bestScore = score(bestPath);
 
+        bestList.add(bestScore);
+        searchList.add(bestScore);
+
+        /**
+         * out search
+         */
         for (int out=0; out<outSearchTime; out++) {
             Random r = new Random(2);
 
             Integer currentBestScore = bestScore;
             ArrayList<Integer> currentBestPath = bestPath;
 
+            /**
+             * in search
+             */
             for (int i=0; i<inSearchTime; i++) {
 
+                //new path
                 ArrayList<Integer> currentPath = newPath(bestPath);
                 Integer currentScore = score(currentPath);
 
+                /**
+                 * new path better, use
+                 * or random use
+                 */
                 if(currentScore < bestScore) {
                     currentBestPath = currentPath;
                     currentBestScore = currentScore;
@@ -98,18 +114,20 @@ public class LAMain {
 
             System.out.println("INNER END:  current score: " + currentBestScore + "current path: " + currentBestPath.toString());
 
+            searchList.add(currentBestScore);
+
             if(currentBestScore < bestScore) {
                 bestScore = currentBestScore;
                 bestPath = currentBestPath;
             }
 
+            bestList.add(bestScore);
+
             T = T * DELTA;
-            if(T < END) {
-                break;
-            }
         }
 
-
+        Tool.array2CSV(searchList, "sa_search.csv");
+        Tool.array2CSV(bestList, "sa_best.csv");
 
         System.out.println("END:  current score: " + bestScore + "best path: " + bestPath.toString());
     }
