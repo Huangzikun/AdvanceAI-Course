@@ -72,8 +72,9 @@ public class SAMain {
         bestPath.add(4);
         bestPath.add(5);
         bestPath.add(6);
-        Integer bestScore = score(bestPath);
+        Collections.shuffle(bestPath);
 
+        Integer bestScore = score(bestPath);
         bestList.add(bestScore);
         searchList.add(bestScore);
 
@@ -102,12 +103,15 @@ public class SAMain {
                 if(currentScore < bestScore) {
                     currentBestPath = currentPath;
                     currentBestScore = currentScore;
+                    break;
+
                 } else {
                     Double rd = r.nextDouble();
 
                     if(Math.exp((currentScore-bestScore) / T) > rd) {
                         currentBestPath = currentPath;
                         currentBestScore = currentScore;
+                        break;
                     }
                 }
             }

@@ -4,10 +4,7 @@ import Tool.Tool;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class GDMain {
 
@@ -76,6 +73,8 @@ public class GDMain {
         bestPath.add(4);
         bestPath.add(5);
         bestPath.add(6);
+        Collections.shuffle(bestPath);
+
         Integer bestScore = score(bestPath);
         Double LEVEL = Double.valueOf(bestScore);
         Double UP = (LEVEL - estQuality)/maxIter;
@@ -92,17 +91,17 @@ public class GDMain {
 
             searchList.add(currentScore);
 
-            System.out.println("current score: " + currentScore + "current path: " + currentPath.toString());
+            System.out.println("i=" + i + " current score: " + currentScore + " current path: " + currentPath.toString());
 
             if(currentScore < bestScore) {
                 bestScore = currentScore;
                 bestPath = currentPath;
-            }
-
-            if(currentScore < LEVEL) {
+            } else if (currentScore < LEVEL) {
                 bestScore = currentScore;
                 bestPath = currentPath;
             }
+
+            System.out.println("bestScore=" + bestScore);
 
             bestList.add(bestScore);
 
