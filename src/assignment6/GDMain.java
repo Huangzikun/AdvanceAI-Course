@@ -64,7 +64,7 @@ public class GDMain {
          */
         ArrayList<Integer> bestPath = new ArrayList<>();
         ArrayList<Integer> bestList = new ArrayList<>();
-        ArrayList<Integer> searchList = new ArrayList<>();
+        ArrayList<Integer> acceptList = new ArrayList<>();
         ArrayList<Double> levelList = new ArrayList<>();
 
         bestPath.add(1);
@@ -80,7 +80,7 @@ public class GDMain {
         Double UP = (LEVEL - estQuality)/maxIter;
 
         bestList.add(bestScore);
-        searchList.add(bestScore);
+        acceptList.add(bestScore);
         levelList.add(LEVEL);
 
         for (int i=0; i<maxIter; i++) {
@@ -89,7 +89,7 @@ public class GDMain {
             ArrayList<Integer> currentPath = newPath(bestPath);
             Integer currentScore = score(currentPath);
 
-            searchList.add(currentScore);
+            acceptList.add(currentScore);
 
             System.out.println("i=" + i + " current score: " + currentScore + " current path: " + currentPath.toString());
 
@@ -97,7 +97,6 @@ public class GDMain {
                 bestScore = currentScore;
                 bestPath = currentPath;
             } else if (currentScore < LEVEL) {
-                bestScore = currentScore;
                 bestPath = currentPath;
             }
 
@@ -114,7 +113,7 @@ public class GDMain {
         System.out.println("best score: " + bestScore + "best path: " + bestPath.toString());
 
 
-        Tool.array2CSV(searchList, "gd_search.csv");
+        Tool.array2CSV(acceptList, "gd_search.csv");
         Tool.array2CSV(bestList, "gd_best.csv");
         Tool.array2CSV(levelList, "gd_level.csv");
     }

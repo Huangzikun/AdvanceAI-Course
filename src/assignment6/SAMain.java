@@ -64,7 +64,7 @@ public class SAMain {
          */
         ArrayList<Integer> bestPath = new ArrayList<>();
         ArrayList<Integer> bestList = new ArrayList<>();
-        ArrayList<Integer> searchList = new ArrayList<>();
+        ArrayList<Integer> acceptList = new ArrayList<>();
 
         bestPath.add(1);
         bestPath.add(2);
@@ -76,7 +76,7 @@ public class SAMain {
 
         Integer bestScore = score(bestPath);
         bestList.add(bestScore);
-        searchList.add(bestScore);
+        acceptList.add(bestScore);
 
         /**
          * out search
@@ -118,7 +118,7 @@ public class SAMain {
 
             System.out.println("INNER END:  current score: " + currentBestScore + "current path: " + currentBestPath.toString());
 
-            searchList.add(currentBestScore);
+            acceptList.add(currentBestScore);
 
             if(currentBestScore < bestScore) {
                 bestScore = currentBestScore;
@@ -130,7 +130,7 @@ public class SAMain {
             T = T * DELTA;
         }
 
-        Tool.array2CSV(searchList, "sa_search.csv");
+        Tool.array2CSV(acceptList, "sa_search.csv");
         Tool.array2CSV(bestList, "sa_best.csv");
 
         System.out.println("END:  current score: " + bestScore + "best path: " + bestPath.toString());
