@@ -54,7 +54,7 @@ public class SAMain {
 
     public static <string> void main(String[] args) throws IOException {
 
-        Double DELTA = 0.95;
+        Double DELTA = 0.98;
         Double T = 1000.0;
         Integer outSearchTime = 200;
         Integer inSearchTime = 20;
