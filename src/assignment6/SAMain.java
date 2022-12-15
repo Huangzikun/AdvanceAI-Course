@@ -56,8 +56,8 @@ public class SAMain {
 
         Double DELTA = 0.95;
         Double T = 1000.0;
-        Integer outSearchTime = 100;
-        Integer inSearchTime = 50;
+        Integer outSearchTime = 200;
+        Integer inSearchTime = 20;
 
         /**
          * default
@@ -101,14 +101,17 @@ public class SAMain {
                  * or random use
                  */
                 if(currentScore < bestScore) {
+                    System.out.println(i + "lower bestScore = " + bestScore);
                     currentBestPath = currentPath;
                     currentBestScore = currentScore;
                     break;
 
                 } else {
-                    Double rd = r.nextDouble();
+                    double rd = r.nextDouble(0.0, 1.0);
+                    double p = 1/(1 + Math.exp(-(currentBestScore - currentScore) / T));
+                    if(p > rd) {
+                        System.out.println(i + "random bestScore = " + bestScore);
 
-                    if(Math.exp((currentScore-bestScore) / T) > rd) {
                         currentBestPath = currentPath;
                         currentBestScore = currentScore;
                         break;
@@ -116,7 +119,7 @@ public class SAMain {
                 }
             }
 
-            System.out.println("INNER END:  current score: " + currentBestScore + "current path: " + currentBestPath.toString());
+            //System.out.println("INNER END:  current score: " + currentBestScore + "current path: " + currentBestPath.toString());
 
             acceptList.add(currentBestScore);
 
@@ -139,9 +142,14 @@ public class SAMain {
     private static Integer score(ArrayList<Integer> arrayList) {
         int sum = 0;
 
-        for(int i=0; i<arrayList.size()-1; i++) {
+        for(int i=0; i<arrayList.size(); i++) {
             Integer point1 = arrayList.get(i);
-            Integer point2 = arrayList.get(i+1);
+            Integer point2;
+            if(i == arrayList.size()-1) {
+                point2 = arrayList.get(0);
+            } else {
+                point2 = arrayList.get(i+1);
+            }
 
             sum += tspMap.get(point1).get(point2);
         }

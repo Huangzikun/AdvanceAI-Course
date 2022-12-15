@@ -50,8 +50,8 @@ put(6, new HashMap<>() {{
 #### SA
 In order to ensure the same number of iterations, the external circulation uses a fixed number of times, not depending on the target temperature
 
-search best score: 330
-search best path: 1, 3, 6, 5, 2, 4 
+search best score: 389
+search best path: 1,2,3,4,5,6,1 
 ```
 Double DELTA = 0.95;
 Double T = 1000.0;
@@ -132,18 +132,18 @@ for (int out=0; out<outSearchTime; out++) {
 ![search SA](sa.jpg "SA")
 
 #### GD
-search best score: 314
-search best path: 4, 6, 1, 5, 3, 2 
+search best score: 389
+search best path: 1, 4, 2, 5, 3, 6 
 ```
-Integer maxIter = 100;
-Integer estQuality = 100;
+Integer maxIter = 200;
+Integer estQuality = 20;
 
 /**
     * default
     */
 ArrayList<Integer> bestPath = new ArrayList<>();
 ArrayList<Integer> bestList = new ArrayList<>();
-ArrayList<Integer> searchList = new ArrayList<>();
+ArrayList<Integer> acceptList = new ArrayList<>();
 ArrayList<Double> levelList = new ArrayList<>();
 
 bestPath.add(1);
@@ -159,28 +159,36 @@ Double LEVEL = Double.valueOf(bestScore);
 Double UP = (LEVEL - estQuality)/maxIter;
 
 bestList.add(bestScore);
-searchList.add(bestScore);
+acceptList.add(bestScore);
 levelList.add(LEVEL);
+
+Integer acceptScore = bestScore;
+ArrayList<Integer> acceptPath = bestPath;
 
 for (int i=0; i<maxIter; i++) {
 
     //new path
-    ArrayList<Integer> currentPath = newPath(bestPath);
+    ArrayList<Integer> currentPath = newPath(acceptPath);
     Integer currentScore = score(currentPath);
 
-    searchList.add(currentScore);
+    System.out.println("i=" + i + " current score: " + currentScore + " current path: " + currentPath.toString());
 
-    System.out.println("current score: " + currentScore + "current path: " + currentPath.toString());
-
-    if (currentScore < bestScore) {
+    if(currentScore < bestScore) {
+        acceptScore = currentScore;
+        acceptPath = currentPath;
         bestScore = currentScore;
+
         bestPath = currentPath;
     } else if (currentScore < LEVEL) {
-        bestScore = currentScore;
+        acceptScore = currentScore;
+        acceptPath = currentPath;
+
         bestPath = currentPath;
     }
 
+    acceptList.add(acceptScore);
     bestList.add(bestScore);
+
 
     LEVEL = LEVEL - UP;
 

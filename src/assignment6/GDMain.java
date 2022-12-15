@@ -56,8 +56,8 @@ public class GDMain {
 
     public static <string> void main(String[] args) throws IOException {
 
-        Integer maxIter = 100;
-        Integer estQuality = 100;
+        Integer maxIter = 200;
+        Integer estQuality = 20;
 
         /**
          * default
@@ -83,26 +83,33 @@ public class GDMain {
         acceptList.add(bestScore);
         levelList.add(LEVEL);
 
+        Integer acceptScore = bestScore;
+        ArrayList<Integer> acceptPath = bestPath;
+
         for (int i=0; i<maxIter; i++) {
 
             //new path
-            ArrayList<Integer> currentPath = newPath(bestPath);
+            ArrayList<Integer> currentPath = newPath(acceptPath);
             Integer currentScore = score(currentPath);
-
-            acceptList.add(currentScore);
 
             System.out.println("i=" + i + " current score: " + currentScore + " current path: " + currentPath.toString());
 
             if(currentScore < bestScore) {
+                acceptScore = currentScore;
+                acceptPath = currentPath;
                 bestScore = currentScore;
+
                 bestPath = currentPath;
             } else if (currentScore < LEVEL) {
+                acceptScore = currentScore;
+                acceptPath = currentPath;
+
                 bestPath = currentPath;
             }
 
-            System.out.println("bestScore=" + bestScore);
-
+            acceptList.add(acceptScore);
             bestList.add(bestScore);
+
 
             LEVEL = LEVEL - UP;
 
@@ -144,9 +151,14 @@ public class GDMain {
     private static Integer score(ArrayList<Integer> arrayList) {
         int sum = 0;
 
-        for(int i=0; i<arrayList.size()-1; i++) {
+        for(int i=0; i<arrayList.size(); i++) {
             Integer point1 = arrayList.get(i);
-            Integer point2 = arrayList.get(i+1);
+            Integer point2;
+            if(i == arrayList.size()-1) {
+                point2 = arrayList.get(0);
+            } else {
+                point2 = arrayList.get(i+1);
+            }
 
             sum += tspMap.get(point1).get(point2);
         }
