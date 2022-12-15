@@ -57,7 +57,7 @@ public class SAMain {
         Double DELTA = 0.98;
         Double T = 1000.0;
         Integer outSearchTime = 200;
-        Integer inSearchTime = 20;
+        Integer inSearchTime = 30;
 
         /**
          * default
@@ -104,22 +104,21 @@ public class SAMain {
                     System.out.println(i + "lower bestScore = " + bestScore);
                     currentBestPath = currentPath;
                     currentBestScore = currentScore;
+                    System.out.println("best");
+
                     break;
 
                 } else {
                     double rd = r.nextDouble(0.0, 1.0);
-                    double p = 1/(1 + Math.exp(-(currentBestScore - currentScore) / T));
+                    double p = Math.exp(-Math.abs(currentBestScore - currentScore) / T);
                     if(p > rd) {
-                        System.out.println(i + "random bestScore = " + bestScore);
+                        System.out.println(i + ": " + p + "： "+T);
 
                         currentBestPath = currentPath;
                         currentBestScore = currentScore;
-                        break;
                     }
                 }
             }
-
-            //System.out.println("INNER END:  current score: " + currentBestScore + "current path: " + currentBestPath.toString());
 
             acceptList.add(currentBestScore);
 
