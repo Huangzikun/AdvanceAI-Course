@@ -106,8 +106,9 @@ for (int out=0; out<outSearchTime; out++) {
 
         } else {
             Double rd = r.nextDouble();
+            double p = Math.exp(-Math.abs(currentBestScore - currentScore) / T);
 
-            if(Math.exp((currentScore-bestScore) / T) > rd) {
+            if(p > rd) {
                 currentBestPath = currentPath;
                 currentBestScore = currentScore;
                 break;
