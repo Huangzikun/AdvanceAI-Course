@@ -4,7 +4,18 @@ import java.util.*;
 
 public class Project1 {
 
-    static Integer researcherCount = 10;
+    static List<String> allMeetings = new ArrayList<>() {{
+        add("P1");
+        add("P2");
+        add("P3");
+        add("P4");
+        add("P5");
+        add("P6");
+        add("P7");
+        add("P8");
+        add("P9");
+        add("P10");
+    }};
     /**
      * meeting and has the same user meeting
      */
@@ -117,18 +128,36 @@ public class Project1 {
     /**
      * 3day -> 2slots -> 2room
      */
-    static Map<Integer, Map<Integer, List<String>>> arrangeMap = new HashMap<>() {{
+    static Map<Integer, Map<Integer, Map<Integer, String>>> arrangeMap = new HashMap<>() {{
         put(1, new HashMap<>() {{
-            put(1, new ArrayList<>(2));
-            put(2, new ArrayList<>(2));
+            put(1, new HashMap<>() {{
+                put(1, null);
+                put(2, null);
+            }});
+            put(2, new HashMap<>() {{
+                put(1, null);
+                put(2, null);
+            }});
         }});
         put(2, new HashMap<>() {{
-            put(1, new ArrayList<>(2));
-            put(2, new ArrayList<>(2));
+            put(1, new HashMap<>() {{
+                put(1, null);
+                put(2, null);
+            }});
+            put(2, new HashMap<>() {{
+                put(1, null);
+                put(2, null);
+            }});
         }});
         put(3, new HashMap<>() {{
-            put(1, new ArrayList<>(2));
-            put(2, new ArrayList<>(2));
+            put(1, new HashMap<>() {{
+                put(1, null);
+                put(2, null);
+            }});
+            put(2, new HashMap<>() {{
+                put(1, null);
+                put(2, null);
+            }});
         }});
     }};
 
@@ -155,35 +184,33 @@ public class Project1 {
         return sortMap;
     }
 
-    static Integer G(Map<Integer, Map<Integer, List<String>>> arrangeMap) {
+    /**
+     * Actual cost
+     * 实际代价
+     */
+    static Integer G(Map<Integer, Map<Integer, Map<Integer, String>>> arrangeMap) {
         Integer solution = 0;
-
 
         ArrayList<String> meetings = new ArrayList<>();
         Map<Integer, LinkedHashSet<String>> currentDayMap = new HashMap<>();
 
-        Over:
-        {
-            for (int day = 1; day <= arrangeMap.size(); day++) {
-                currentDayMap.put(day, new LinkedHashSet<>());
+        for (int day = 1; day <= arrangeMap.size(); day++) {
+            currentDayMap.put(day, new LinkedHashSet<>());
 
-                for (int slot = 1; slot <= arrangeMap.get(day).size(); slot++) {
-                    for (int room = 0; room < arrangeMap.get(day).get(slot).size(); room++) {
-                        String currentMeeting = arrangeMap.get(day).get(slot).get(room);
+            for (int slot = 1; slot <= arrangeMap.get(day).size(); slot++) {
+                for (int room = 1; room <= arrangeMap.get(day).get(slot).size(); room++) {
+                    String currentMeeting = arrangeMap.get(day).get(slot).get(room);
 
-                        //If it is empty, it indicates that it has not been arranged here
-                        //如果是空，表明还没有安排到这里
-                        if (Objects.isNull(currentMeeting)) {
-                            break Over;
-                        }
-
+                    //If it is empty, it indicates that it has not been arranged here
+                    //如果是空，表明还没有安排到这里
+                    if (!Objects.isNull(currentMeeting)) {
                         meetings.add(currentMeeting);
                         currentDayMap.get(day).add(currentMeeting);
-
                     }
                 }
             }
         }
+
 
         /**
          * cal i: n penalty is given if the researcher is idle (does not attend a meeting
@@ -217,7 +244,92 @@ public class Project1 {
             }
         }
 
+        /**
+         * iii: Every day D1 or D2 when a room is unoccupied, there will be a two-point penalty (not reserved for a meeting).
+         * 每天D1或D2房间无人时，将处以两分罚款
+         */
+        if(currentDayMap.get(1).size() < 4) {
+            solution += 2;
+        }
+        if(currentDayMap.get(2).size() < 4) {
+            solution += 2;
+        }
+
         return solution;
+    }
+
+    /**
+     * Estimated cost
+     * 预估代价
+     */
+    static Integer H(Map<Integer, Map<Integer, Map<Integer, String>>> arrangeMap) {
+        Integer solution = 0;
+
+        return solution;
+    }
+
+    /**
+     * !!! Hard constraint
+     * Next allowed meeting
+     * @param arrangeMap
+     * @return
+     */
+    static List<String> openList(Map<Integer, Map<Integer, Map<Integer, String>>> arrangeMap) {
+        List<String> openList = new ArrayList<>(allMeetings);
+        ArrayList<String> meetings = new ArrayList<>();
+
+
+        for (int day = 1; day <= arrangeMap.size(); day++) {
+            for (int slot = 1; slot <= arrangeMap.get(day).size(); slot++) {
+                for (int room = 1; room <= arrangeMap.get(day).get(slot).size(); room++) {
+                    String currentMeeting = arrangeMap.get(day).get(slot).get(room);
+
+                    //If it is empty, it indicates that it has not been arranged here
+                    //如果是空，表明还没有安排到这里
+                    if (!Objects.isNull(currentMeeting)) {
+                        meetings.add(currentMeeting);
+                    }
+                }
+            }
+        }
+
+        /**
+         * Get the list of unscheduled meetings
+         * 取没安排的会议列表
+         */
+        openList.removeAll(meetings);
+
+        Over:
+        {
+            for (int day = 1; day <= arrangeMap.size(); day++) {
+                for (int slot = 1; slot <= arrangeMap.get(day).size(); slot++) {
+                    for (int room = 1; room <= arrangeMap.get(day).get(slot).size(); room++) {
+                        String currentMeeting = arrangeMap.get(day).get(slot).get(room);
+
+                        //If it is empty, arrange here
+                        //如果是空，安排
+                        if (Objects.isNull(currentMeeting)) {
+
+                            //If it is the second room, you need to check the conflict with the first room
+                            //如果当前是第二个房间，需要检查和第一个房间的冲突
+                            if(room == 2) {
+                                String room1Meeting = arrangeMap.get(day).get(slot).get(1);
+                                List<String> conflict = graph.get(room1Meeting);
+
+                                openList.removeAll(conflict);
+                            }
+
+
+                            break Over;
+                        }
+
+                        meetings.add(currentMeeting);
+                    }
+                }
+            }
+        }
+
+        return openList;
     }
 
     public static Integer eval(Map<Integer, Map<Integer, List<Integer>>> arrangeMap) {
@@ -231,13 +343,13 @@ public class Project1 {
 
         System.out.println(sort);
 
-        arrangeMap.put(1, new HashMap<>() {{
-            put(1, new ArrayList<>() {{
-                add("P1");
-            }});
-        }});
+        arrangeMap.get(1).get(1).put(1, "P1");
 
         Integer s = G(arrangeMap);
         System.out.println(s);
+
+        List<String> openList = openList(arrangeMap);
+        System.out.println(openList);
+
     }
 }
