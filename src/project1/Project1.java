@@ -13,8 +13,6 @@ public class Project1 {
         add("P6");
         add("P7");
         add("P8");
-        add("P9");
-        add("P10");
     }};
     /**
      * meeting and has the same user meeting
@@ -262,8 +260,90 @@ public class Project1 {
      * Estimated cost
      * 预估代价
      */
-    static Integer H(Map<Integer, Map<Integer, Map<Integer, String>>> arrangeMap) {
-        Integer solution = 0;
+    static Map<String, Integer> H(Map<Integer, Map<Integer, Map<Integer, String>>> currentArrangeMap, List<String> openList) {
+        Map<String, Integer> solution = new HashMap<>();
+
+        Integer G = G(currentArrangeMap);
+
+        Over:
+        {
+            for (int day = 1; day <= arrangeMap.size(); day++) {
+                for (int slot = 1; slot <= arrangeMap.get(day).size(); slot++) {
+                    for (int room = 1; room <= arrangeMap.get(day).get(slot).size(); room++) {
+                        String currentMeeting = arrangeMap.get(day).get(slot).get(room);
+
+                        //If it is empty, arrange here
+                        //如果是空，安排
+                        if (Objects.isNull(currentMeeting)) {
+
+                            Integer D = day;
+                            Integer S = slot;
+                            Integer R = room;
+
+                            if(room == 1) {
+                                if(slot == 1) {
+                                    //前一天的最后一个
+                                    D = Math.min(1, day - 1);
+                                    R = 2;
+                                    S = 2;
+                                } else {
+                                    S = Math.min(1, slot - 1);
+                                    R = 2;
+                                }
+                            } else {
+                                R = Math.min(1, room-1);
+                            }
+
+                            String lastMeeting = arrangeMap.get(D).get(S).get(R);
+
+                            for (String meeting : openList) {
+
+                                Map<Integer, Map<Integer, Map<Integer, String>>> testMap = new HashMap<>(currentArrangeMap);
+                                testMap.get(day).get(slot).put(room, meeting);
+                                Integer testG = G(testMap);
+                                /**
+                                 * 已知如果这么安排会增加的罚分
+                                 */
+                                Integer addSol = testG - G;
+
+                                /**
+                                 * 预测如果这样安排会有多少罚分
+                                 */
+                                List<String> unArrangeList = new ArrayList<>(openList);
+                                unArrangeList.remove(meeting);
+
+                                for (int i = 0; i<unArrangeList.size(); i++) {
+                                    List<String> A;
+                                    if(i == 0) {
+                                        A = new ArrayList<>(graph.get(meeting));
+                                    } else {
+                                        A = new ArrayList<>(graph.get(unArrangeList.get(i-1)));
+                                    }
+
+                                    List<String> B = new ArrayList<>(graph.get(unArrangeList.get(i)));
+
+                                    A.retainAll(B);
+
+                                    //之后的所有有变化的差集都有可能导致加分
+                                    addSol += A.size();
+                                }
+
+
+
+                                solution.put(meeting, addSol);
+                            }
+
+
+
+                            break Over;
+                        }
+                    }
+                }
+            }
+        }
+
+
+
 
         return solution;
     }
@@ -319,7 +399,6 @@ public class Project1 {
                                 openList.removeAll(conflict);
                             }
 
-
                             break Over;
                         }
 
@@ -333,6 +412,7 @@ public class Project1 {
     }
 
     public static Integer eval(Map<Integer, Map<Integer, List<Integer>>> arrangeMap) {
+
 
 
         return 0;
@@ -350,6 +430,8 @@ public class Project1 {
 
         List<String> openList = openList(arrangeMap);
         System.out.println(openList);
+
+        H(arrangeMap, openList);
 
     }
 }
