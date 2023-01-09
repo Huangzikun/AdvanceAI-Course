@@ -265,15 +265,17 @@ public class Project1 {
         {
             for (int day = 1; day <= arrangeMap.size(); day++) {
                 Integer dayScore = 0;
+
                 for (int slot = 1; slot <= arrangeMap.get(day).size(); slot++) {
                         String currentMeeting1 = arrangeMap.get(day).get(slot).get(1);
                         String currentMeeting2 = arrangeMap.get(day).get(slot).get(2);
-
 
                         if (Objects.isNull(currentMeeting1) && Objects.isNull(currentMeeting2)) {
                             break i1Over;
                         }
 
+                        //If there is this researcher in the current meeting, delete his meeting
+                        //如果当前会议有这个研究人员的，删除他的会议
                         List<Integer> reList = new ArrayList<>();
                         for (Integer reId : re.keySet()) {
                             if(!re.get(reId).isEmpty() && re.get(reId).contains(currentMeeting1)) {
@@ -286,16 +288,20 @@ public class Project1 {
 
                             }
                         }
+
+                        //重新循环查找会议人员，如果他不在会议列表里，但是还有剩余会议，需要加分
+                        //Re-cycle to find the meeting person. If he is not in the meeting list,
+                        //but there are still remaining meetings, additional points are required
                         for (Integer reId: re.keySet()) {
                             if(!re.get(reId).isEmpty() && !reList.contains(reId)) {
                                 dayScore ++;
                             }
                         }
 
-                        System.out.println("day = " + day + ", i1 = " + dayScore);
-                        i1 += dayScore;
                     }
-                }
+                System.out.println("day = " + day + ", i1 = " + dayScore);
+                i1 += dayScore;
+            }
         }
 
         /**
