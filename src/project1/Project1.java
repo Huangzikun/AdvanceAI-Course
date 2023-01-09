@@ -264,32 +264,38 @@ public class Project1 {
         i1Over:
         {
             for (int day = 1; day <= arrangeMap.size(); day++) {
+                Integer dayScore = 0;
                 for (int slot = 1; slot <= arrangeMap.get(day).size(); slot++) {
-                    for (int room = 1; room <= arrangeMap.get(day).get(slot).size(); room++) {
-                        String currentMeeting = arrangeMap.get(day).get(slot).get(room);
-                        if (Objects.isNull(currentMeeting)) {
+                        String currentMeeting1 = arrangeMap.get(day).get(slot).get(1);
+                        String currentMeeting2 = arrangeMap.get(day).get(slot).get(2);
+
+
+                        if (Objects.isNull(currentMeeting1) && Objects.isNull(currentMeeting2)) {
                             break i1Over;
                         }
 
-                        for (Integer researcher : re.keySet()) {
-                            List<String> unArrangeMeetings = re.get(researcher);
-                            // if the researcher not has meeting, not need to add score
-                            //安排完了不扣分
-                            if (unArrangeMeetings.isEmpty()) {
-                                continue;
+                        List<Integer> reList = new ArrayList<>();
+                        for (Integer reId : re.keySet()) {
+                            if(!re.get(reId).isEmpty() && re.get(reId).contains(currentMeeting1)) {
+                                reList.add(reId);
+                                re.get(reId).remove(currentMeeting1);
                             }
+                            if(!re.get(reId).isEmpty() && re.get(reId).contains(currentMeeting2)) {
+                                reList.add(reId);
+                                re.get(reId).remove(currentMeeting2);
 
-                            //if current meeting not this researcher's meeting, add one.
-                            //如果没有当前的会议就加
-                            if (!unArrangeMeetings.contains(currentMeeting)) {
-                                i1++;
                             }
-
-                            re.get(researcher).remove(currentMeeting);
                         }
+                        for (Integer reId: re.keySet()) {
+                            if(!re.get(reId).isEmpty() && !reList.contains(reId)) {
+                                dayScore ++;
+                            }
+                        }
+
+                        System.out.println("day = " + day + ", i1 = " + dayScore);
+                        i1 += dayScore;
                     }
                 }
-            }
         }
 
         /**
@@ -317,11 +323,21 @@ public class Project1 {
          * 每天D1或D2房间无人时，将处以两分罚款
          */
         Integer i3 = 0;
-        if(currentDayMap.get(1).size() < 4) {
-            i3 += 2;
-        }
-        if(currentDayMap.get(2).size() < 4) {
-            i3 += 2;
+
+        ArrayList d1AndD2 = new ArrayList<>() {{
+            add(1);
+            add(2);
+        }};
+        for (int day = 1; day <= d1AndD2.size(); day++) {
+            for (int slot = 1; slot <= arrangeMap.get(day).size(); slot++) {
+                for (int room = 1; room <= arrangeMap.get(day).get(slot).size(); room++) {
+                    String currentMeeting = arrangeMap.get(day).get(slot).get(room);
+
+                    if(emptyMeeting.equals(currentMeeting) || Objects.isNull(currentMeeting)) {
+                        i3 += 2;
+                    }
+                }
+            }
         }
 
         System.out.println("i1 = " + i1 + ", i2 = " + i2 + ", i3 = " + i3);
@@ -369,7 +385,6 @@ public class Project1 {
                                 R = Math.min(1, room-1);
                             }
 
-                            String lastMeeting = arrangeMap.get(D).get(S).get(R);
 
                             /**
                              * every open meeting cal
@@ -413,7 +428,7 @@ public class Project1 {
                                  * so we need to reduce or increase the weight according to experience
                                  * 不是所有差集都会有变化，取决于安排的顺序，所以这里需要根据经验进行一定权重的下降或增长
                                  */
-                                addSol /= 4;
+                                //addSol /= 2;
 
                                 /**
                                  * ii
