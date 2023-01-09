@@ -74,6 +74,9 @@ public class Project1 {
         }});
     }};
 
+    /**
+     * researchers and meetings
+     */
     static Map<Integer, ArrayList<String>> researchers = new HashMap<>() {{
         put(1, new ArrayList<>() {{
             add("P1");
@@ -124,7 +127,6 @@ public class Project1 {
             add("P8");
         }});
     }};
-
     static Map<Integer, ArrayList<String>> researcherDelete = new HashMap<>() {{
         put(1, new ArrayList<>() {{
             add("P1");
@@ -212,34 +214,11 @@ public class Project1 {
         }});
     }};
 
-    static Map<String, ArrayList<String>> sortMap(Map<String, ArrayList<String>> map) {
-        /**
-         * sort by size
-         */
-        LinkedList<ArrayList<String>> linkedList = new LinkedList<>();
-        for (String i : map.keySet()) {
-                linkedList.push(map.get(i));
-        }
-
-        linkedList.sort((o1, o2) -> o1.size() - o2.size());
-
-        Map<String, ArrayList<String>> sortMap = new LinkedHashMap<>();
-        for (ArrayList<String> list : linkedList) {
-            for (String i : map.keySet()) {
-                if(list.equals(map.get(i))) {
-                    sortMap.put(i, map.get(i));
-                }
-            }
-        }
-
-        return sortMap;
-    }
-
     /**
      * Actual cost
      * 实际代价
      */
-    static Integer G(Map<Integer, Map<Integer, Map<Integer, String>>> arrangeMap, Boolean isEnd) {
+    static Integer actualCost(Map<Integer, Map<Integer, Map<Integer, String>>> arrangeMap, Boolean isEnd) {
 
         ArrayList<String> meetings = new ArrayList<>();
         Map<Integer, LinkedHashSet<String>> currentDayMap = new HashMap<>();
@@ -294,11 +273,13 @@ public class Project1 {
 
                         for (Integer researcher : re.keySet()) {
                             List<String> unArrangeMeetings = re.get(researcher);
+                            // if the researcher not has meeting, not need to add score
                             //安排完了不扣分
                             if (unArrangeMeetings.isEmpty()) {
                                 continue;
                             }
 
+                            //if current meeting not this researcher's meeting, add one.
                             //如果没有当前的会议就加
                             if (!unArrangeMeetings.contains(currentMeeting)) {
                                 i1++;
@@ -352,10 +333,10 @@ public class Project1 {
      * Estimated cost
      * 预估代价
      */
-    static Map<String, Integer> H(Map<Integer, Map<Integer, Map<Integer, String>>> currentArrangeMap, List<String> openList) {
+    static Map<String, Integer> estimatedCost(Map<Integer, Map<Integer, Map<Integer, String>>> currentArrangeMap, List<String> openList) {
         Map<String, Integer> solution = new HashMap<>();
 
-        Integer G = G(currentArrangeMap, false);
+        Integer G = actualCost(currentArrangeMap, false);
 
         Over:
         {
@@ -391,6 +372,7 @@ public class Project1 {
                             String lastMeeting = arrangeMap.get(D).get(S).get(R);
 
                             /**
+                             * every open meeting cal
                              * 每个会议搜索一次
                              */
                             for (String meeting : openList) {
@@ -398,11 +380,13 @@ public class Project1 {
                                 Map<Integer, Map<Integer, Map<Integer, String>>> testMap = new HashMap<>(currentArrangeMap);
                                 testMap.get(day).get(slot).put(room, meeting);
                                 /**
+                                 * Directly arrange to calculate the score that will be increased
                                  * 已知如果这么安排会增加的罚分
                                  */
-                                Integer addSol = G(testMap, false);
+                                Integer addSol = actualCost(testMap, false);
 
                                 /**
+                                 * Predict how many points will be fined if this arrangement is made
                                  * 预测如果这样安排会有多少罚分
                                  */
                                 List<String> unArrangeList = new ArrayList<>(openList);
@@ -425,7 +409,9 @@ public class Project1 {
                                 }
 
                                 /**
-                                 * TODO 猜的一个值
+                                 * Not all difference sets will change, depending on the order of arrangement,
+                                 * so we need to reduce or increase the weight according to experience
+                                 * 不是所有差集都会有变化，取决于安排的顺序，所以这里需要根据经验进行一定权重的下降或增长
                                  */
                                 addSol /= 4;
 
@@ -540,9 +526,9 @@ public class Project1 {
     }
 
     public static String eval(Map<Integer, Map<Integer, Map<Integer, String>>> arrangeMap, List<String> openList) {
-        Integer gEval = G(arrangeMap, false);
+        Integer gEval = actualCost(arrangeMap, false);
 
-        Map<String, Integer> solList = H(arrangeMap, openList);
+        Map<String, Integer> solList = estimatedCost(arrangeMap, openList);
         System.out.println("sol list = " + solList);
 
         String meeting = null;
@@ -597,6 +583,6 @@ public class Project1 {
             }
         }
 
-        System.out.println("result score = " + G(arrangeMap, true));
+        System.out.println("result score = " + actualCost(arrangeMap, true));
     }
 }
