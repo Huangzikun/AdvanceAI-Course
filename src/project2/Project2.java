@@ -1,7 +1,7 @@
 package project2;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 public class Project2 {
     private static final Map<Integer, Map<Integer, Integer>> tspMap = new HashMap<>() {{
@@ -63,5 +63,150 @@ public class Project2 {
             put(6, 115);
         }});
     }};
+
+
+    static Integer HMS = 5;
+    static Double HMCR = 0.5;
+
+    static Double PAR = 0.1;
+
+    static Integer NI = 500;
+
+    private static final ArrayList<Integer> scoreList = new ArrayList<>(NI);
+
+
+    public static <string> void main(String[] args) {
+
+        ArrayList<ArrayList<Integer>> hmsArr = new ArrayList<>();
+        Map<Integer, ArrayList<Integer>> hmsMap = new TreeMap<>();
+
+
+        /**
+         * init HMS
+         */
+        for (int i=0; i<HMS; i++) {
+            ArrayList<Integer> defaultPath = new ArrayList<>() {{
+                add(1);
+                add(2);
+                add(3);
+                add(4);
+                add(5);
+                add(6);
+                add(7);
+            }};
+            Collections.shuffle(defaultPath);
+            hmsArr.add(defaultPath);
+        }
+
+        System.out.println("default hms: " + hmsArr);
+
+
+
+        //按从小到大排序，第一个是最小的
+        hmsArr.sort(getComparator());
+        for (ArrayList<Integer> arrayList : hmsArr) {
+            hmsMap.put(score(arrayList), arrayList);
+        }
+
+        System.out.println("default hmsMap: " + hmsMap);
+
+
+        for (int i = 0; i<NI; i++) {
+            ArrayList<Integer> newHarmony = improviseHarmony(hmsArr);
+
+            scoreList.add(score(newHarmony));
+            System.out.println("new harmony sol = " + score(newHarmony));
+
+            Integer index = hmsArr.size()-1;
+
+            if (score(newHarmony) < score(hmsArr.get(index))) {
+                ArrayList<Integer> old = hmsArr.get(index);
+
+                hmsArr.remove(index.intValue());
+                hmsArr.add(index, newHarmony);
+
+                hmsMap.remove(score(old));
+                hmsMap.put(score(newHarmony), newHarmony);
+            }
+
+            System.out.println("hmsMap: " + hmsMap);
+
+            hmsArr.sort(getComparator());
+        }
+
+        System.out.println(hmsArr);
+        System.out.println(score(hmsArr.get(0)));
+        System.out.println(scoreList);
+    }
+
+    public static ArrayList<Integer> improviseHarmony(ArrayList<ArrayList<Integer>> hmsArr) {
+        ArrayList<Integer> newHarmony = new ArrayList<>();
+
+        Random random = (new Random());
+
+
+        for (int i = 0; i<tspMap.size(); i++) {
+
+            double rnd = random.nextDouble();
+
+            Integer randomSolPoint;
+
+            if (rnd < HMCR) {
+
+                ArrayList<Integer> randomSol = hmsArr.get(random.nextInt(0, hmsArr.size()));
+                randomSolPoint = randomSol.get(random.nextInt(0, tspMap.size()));
+
+                if(rnd < PAR) {
+                    randomSolPoint = random.nextDouble(0, 1) > 0.5 ? randomSolPoint+1 : randomSolPoint-1;
+
+                    if(randomSolPoint < 1) {
+                        randomSolPoint = 1;
+                    }
+                    if (randomSolPoint > tspMap.size()) {
+                        randomSolPoint = tspMap.size();
+                    }
+                }
+
+            } else {
+                randomSolPoint = random.nextInt(1, tspMap.size()+1);
+            }
+
+            Integer c = 0;
+            while (newHarmony.contains(randomSolPoint)) {
+                c++;
+                System.out.println("sol point repeat c="+c + "new = " + newHarmony);
+
+                randomSolPoint = random.nextInt(1, tspMap.size()+1);
+            }
+
+            newHarmony.add(i, randomSolPoint);
+        }
+
+        return newHarmony;
+    }
+
+    private static Comparator<ArrayList<Integer>> getComparator() {
+
+        return Comparator.comparingInt(Project2::score);
+    }
+
+
+    private static Integer score(ArrayList<Integer> arrayList) {
+        int sum = 0;
+
+        for(int i=0; i<arrayList.size(); i++) {
+            Integer point1 = arrayList.get(i);
+            Integer point2;
+            if(i == arrayList.size()-1) {
+                point2 = arrayList.get(0);
+            } else {
+                point2 = arrayList.get(i+1);
+            }
+
+            sum += tspMap.get(point1).get(point2);
+        }
+
+        return sum;
+    }
 
 }
