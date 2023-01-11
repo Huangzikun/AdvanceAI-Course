@@ -80,6 +80,9 @@ public class Project2 {
         ArrayList<ArrayList<Integer>> hmsArr = new ArrayList<>();
         Map<Integer, ArrayList<Integer>> hmsMap = new TreeMap<>();
 
+        ArrayList<Integer> hmsBest = new ArrayList<>();
+        ArrayList<Integer> search  = new ArrayList<>();
+        ArrayList<Integer> accept  = new ArrayList<>();
 
         /**
          * init HMS
@@ -109,7 +112,7 @@ public class Project2 {
         }
 
         System.out.println("default hmsMap: " + hmsMap);
-
+        hmsBest.add((Integer) hmsMap.keySet().toArray()[0]);
 
         for (int i = 0; i<NI; i++) {
             ArrayList<Integer> newHarmony = improviseHarmony(hmsArr);
@@ -132,11 +135,15 @@ public class Project2 {
             System.out.println("hmsMap: " + hmsMap);
 
             hmsArr.sort(getComparator());
+
+            hmsBest.add((Integer) hmsMap.keySet().toArray()[0]);
         }
 
         System.out.println(hmsArr);
         System.out.println(score(hmsArr.get(0)));
         System.out.println(scoreList);
+
+        System.out.println(hmsBest);
     }
 
     public static ArrayList<Integer> improviseHarmony(ArrayList<ArrayList<Integer>> hmsArr) {

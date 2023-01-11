@@ -28,6 +28,11 @@ while(!allMeetingList.isEmpty()) {
 }
 ```
 
+#### Solution
+select meeting = P6, arrange = {1={1={1=P5, 2=P4}, 2={1=P3, 2=P7}}, 2={1={1=P8, 2=P1}, 2={1=P2, 2=EMPTY}}, 3={1={1=P6, 2=null}, 2={1=null, 2=null}}}
+i1 = 14, i2 = 0, i3 = 2
+result score = 16
+
 #### Code
 ```Java
 package project1;
@@ -639,7 +644,6 @@ public class Project1 {
         System.out.println("result score = " + actualCost(arrangeMap, true));
     }
 }
-
 ```
 
 
