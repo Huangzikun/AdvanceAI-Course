@@ -289,17 +289,21 @@ public class Project1 {
                             }
                         }
 
+                        ArrayList<Integer> reIdList = new ArrayList<>();
                         //重新循环查找会议人员，如果他不在会议列表里，但是还有剩余会议，需要加分
                         //Re-cycle to find the meeting person. If he is not in the meeting list,
                         //but there are still remaining meetings, additional points are required
                         for (Integer reId: re.keySet()) {
                             if(!re.get(reId).isEmpty() && !reList.contains(reId)) {
                                 dayScore ++;
+                                reIdList.add(reId);
                             }
                         }
 
+                    System.out.println("day = " + day + ", slot = " + slot + ", reIdList = " + reIdList);
                     }
                 System.out.println("day = " + day + ", i1 = " + dayScore);
+
                 i1 += dayScore;
             }
         }
@@ -434,7 +438,7 @@ public class Project1 {
                                  * so we need to reduce or increase the weight according to experience
                                  * 不是所有差集都会有变化，取决于安排的顺序，所以这里需要根据经验进行一定权重的下降或增长
                                  */
-                                //addSol /= 2;
+                                addSol /= 2;
 
                                 /**
                                  * ii
