@@ -1,5 +1,7 @@
 package project2;
 
+import Tool.Tool;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -75,7 +77,7 @@ public class Project2 {
     private static final ArrayList<Integer> scoreList = new ArrayList<>(NI);
 
 
-    public static <string> void main(String[] args) {
+    public static <string> void main(String[] args) throws IOException {
 
         ArrayList<ArrayList<Integer>> hmsArr = new ArrayList<>();
         Map<Integer, ArrayList<Integer>> hmsMap = new TreeMap<>();
@@ -113,11 +115,12 @@ public class Project2 {
 
         System.out.println("default hmsMap: " + hmsMap);
         hmsBest.add((Integer) hmsMap.keySet().toArray()[0]);
+        scoreList.add((Integer) hmsMap.keySet().toArray()[0]);
+
 
         for (int i = 0; i<NI; i++) {
             ArrayList<Integer> newHarmony = improviseHarmony(hmsArr);
 
-            scoreList.add(score(newHarmony));
             System.out.println("new harmony sol = " + score(newHarmony));
 
             Integer index = hmsArr.size()-1;
@@ -130,6 +133,10 @@ public class Project2 {
 
                 hmsMap.remove(score(old));
                 hmsMap.put(score(newHarmony), newHarmony);
+
+                scoreList.add(score(newHarmony));
+            } else {
+                scoreList.add(score(hmsArr.get(index)));
             }
 
             System.out.println("hmsMap: " + hmsMap);
@@ -144,13 +151,15 @@ public class Project2 {
         System.out.println(scoreList);
 
         System.out.println(hmsBest);
+
+        Tool.array2CSV(hmsBest, "hm_best.csv");
+        Tool.array2CSV(scoreList, "hm_score_list.csv");
     }
 
     public static ArrayList<Integer> improviseHarmony(ArrayList<ArrayList<Integer>> hmsArr) {
         ArrayList<Integer> newHarmony = new ArrayList<>();
 
         Random random = (new Random());
-
 
         for (int i = 0; i<tspMap.size(); i++) {
 
@@ -164,13 +173,18 @@ public class Project2 {
                 randomSolPoint = randomSol.get(random.nextInt(0, tspMap.size()));
 
                 if(rnd < PAR) {
-                    randomSolPoint = random.nextDouble(0, 1) > 0.5 ? randomSolPoint+1 : randomSolPoint-1;
+                    while (newHarmony.contains(randomSolPoint)) {
 
-                    if(randomSolPoint < 1) {
-                        randomSolPoint = 1;
-                    }
-                    if (randomSolPoint > tspMap.size()) {
-                        randomSolPoint = tspMap.size();
+                        randomSolPoint = random.nextDouble(0, 1) > 0.5 ? randomSolPoint + 1 : randomSolPoint - 1;
+
+                        if (randomSolPoint < 1) {
+                            randomSolPoint = 1;
+                            break;
+                        }
+                        if (randomSolPoint > tspMap.size()) {
+                            randomSolPoint = tspMap.size();
+                            break;
+                        }
                     }
                 }
 
