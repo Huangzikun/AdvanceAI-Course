@@ -404,11 +404,11 @@ public class Project1 {
 
                                 Map<Integer, Map<Integer, Map<Integer, String>>> testMap = new HashMap<>(currentArrangeMap);
                                 testMap.get(day).get(slot).put(room, meeting);
-                                /**
+                                /**¡
                                  * Directly arrange to calculate the score that will be increased
                                  * 已知如果这么安排会增加的罚分
                                  */
-                                Integer addSol = actualCost(testMap, false);
+                                Integer addSol = actualCost(testMap, false) - G;
 
                                 /**
                                  * Predict how many points will be fined if this arrangement is made
