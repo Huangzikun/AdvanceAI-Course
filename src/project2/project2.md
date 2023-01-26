@@ -4,6 +4,137 @@
 #### Search Process 
 ![search SA](../../hm.jpg "SA")
 
+###### The shortest path we can find is 6-1-5-2-3-7-4-6
+###### The sortest path is 379.
+
+1. First, we need to initialize the content of the HMS. We randomly generate five solutions and sort them according to the distance value of the solutions.
+```
+for (int i=0; i<HMS; i++) {
+            ArrayList<Integer> defaultPath = new ArrayList<>() {{
+                add(1);
+                add(2);
+                add(3);
+                add(4);
+                add(5);
+                add(6);
+                add(7);
+            }};
+            Collections.shuffle(defaultPath);
+            hmsArr.add(defaultPath);
+        }
+
+        System.out.println("default hms: " + hmsArr);
+
+
+
+        //按从小到大排序，第一个是最小的
+        //Sorted from small to large, the first is the smallest
+        hmsArr.sort(getComparator());
+        for (ArrayList<Integer> arrayList : hmsArr) {
+            hmsMap.put(score(arrayList), arrayList);
+        }
+```
+```
+[
+    [2, 7, 5, 1, 6, 4, 3], 
+    [3, 6, 4, 5, 1, 7, 2], 
+    [1, 5, 3, 4, 6, 7, 2], 
+    [3, 2, 5, 7, 1, 4, 6], 
+    [2, 1, 7, 6, 4, 5, 3]
+    ]
+```
+2. According to the requirements, we need to iterate 500 times. For each iteration, we have the following operations
+2.1 We need to iterate the number of TSP points (7 here). For each iteration, the first random number rnd1 is generated and compared with HMCR. If the random number rnd1 is less than HMCR, we go to step 2.2. If rnd1 is greater than HMCR, we randomly select a point to move.
+2.2 We randomly select a value in HMS as the ith solution. We need to generate the second random number rnd2 and compare it with PAR. If rnd2 is less than PAR, we perform random+1 or - 1 operations on the selected. 
+3. After 7 iterations, we can get a new solution. Compare its value with the last value in HMS. If it is less than the value in HMS, replace it and re-order it to get a new HMS
+
+```
+HMCR = 0.5
+PAR = 0.1
+
+rnd1 = 0.77, rnd2 = 0.00, select point = 6, sol = [6]
+rnd1 = 0.05, rnd2 = 0.60, select point = 2, sol = [6, 2]
+rnd1 = 0.77, rnd2 = 0.00, select point = 5, sol = [6, 2, 5]
+rnd1 = 0.94, rnd2 = 0.00, select point = 4, sol = [6, 2, 5, 4]
+rnd1 = 0.64, rnd2 = 0.00, select point = 7, sol = [6, 2, 5, 4, 7]
+rnd1 = 0.47, rnd2 = 0.85, select point = 1, sol = [6, 2, 5, 4, 7, 1]
+rnd1 = 0.32, rnd2 = 0.06, select point = 3, sol = [6, 2, 5, 4, 7, 1, 3]
+
+new harmony sol = 677
+bigger than the last HMS, not use
+
+rnd1 = 0.68, rnd2 = 0.00, select point = 1, sol = [1]
+rnd1 = 0.91, rnd2 = 0.00, select point = 7, sol = [1, 7]
+rnd1 = 0.99, rnd2 = 0.00, select point = 4, sol = [1, 7, 4]
+rnd1 = 0.20, rnd2 = 0.29, select point = 3, sol = [1, 7, 4, 3]
+rnd1 = 0.06, rnd2 = 0.25, select point = 2, sol = [1, 7, 4, 3, 2]
+rnd1 = 0.13, rnd2 = 0.06, select point = 6, sol = [1, 7, 4, 3, 2, 6]
+rnd1 = 0.80, rnd2 = 0.00, select point = 5, sol = [1, 7, 4, 3, 2, 6, 5]
+new harmony sol = 633
+smaller than the last HMS, add this harmony
+
+the new HMS:
+{
+    524=[3, 7, 6, 4, 2, 1, 5], 
+    607=[3, 2, 5, 7, 6, 4, 1], 
+    633=[1, 7, 4, 3, 2, 6, 5], 
+    634=[6, 4, 7, 5, 3, 2, 1], 
+    674=[4, 3, 7, 5, 6, 1, 2]
+    }
+```
+
+##### improviseHarmony
+```Java
+for (int i = 0; i<tspMap.size(); i++) {
+
+            double rnd1 = random.nextDouble();
+
+            Integer randomSolPoint;
+
+            if (rnd1 < HMCR) {
+                System.out.println(hmsArr);
+                ArrayList<Integer> randomSol = hmsArr.get(random.nextInt(0, hmsArr.size()));
+                randomSolPoint = randomSol.get(random.nextInt(0, tspMap.size()));
+                System.out.println(randomSolPoint);
+
+                double rnd2 = random.nextDouble();
+
+                if(rnd2 < PAR) {
+
+                    // random +1 or -1
+                    while (newHarmony.contains(randomSolPoint)) {
+
+                        randomSolPoint = random.nextDouble(0, 1) > 0.5 ? randomSolPoint + 1 : randomSolPoint - 1;
+
+                        if (randomSolPoint < 1) {
+                            randomSolPoint = 1;
+                            break;
+                        }
+                        if (randomSolPoint > tspMap.size()) {
+                            randomSolPoint = tspMap.size();
+                            break;
+                        }
+                    }
+                }
+
+            } else {
+                randomSolPoint = random.nextInt(1, tspMap.size()+1);
+            }
+
+            // if random sol point contains, random one
+            Integer c = 0;
+            while (newHarmony.contains(randomSolPoint)) {
+                c++;
+                System.out.println("sol point repeat c="+c + "new = " + newHarmony);
+
+                randomSolPoint = random.nextInt(1, tspMap.size()+1);
+            }
+
+            newHarmony.add(i, randomSolPoint);
+        }
+```
+
+
 #### Code
 ```Java
 package project2;

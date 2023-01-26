@@ -164,16 +164,20 @@ public class Project2 {
 
         for (int i = 0; i<tspMap.size(); i++) {
 
-            double rnd = random.nextDouble();
+            double rnd1 = random.nextDouble();
+            double rnd2 = 0.0;
 
             Integer randomSolPoint;
 
-            if (rnd < HMCR) {
-
+            if (rnd1 < HMCR) {
+                System.out.println(hmsArr);
                 ArrayList<Integer> randomSol = hmsArr.get(random.nextInt(0, hmsArr.size()));
                 randomSolPoint = randomSol.get(random.nextInt(0, tspMap.size()));
+                System.out.println(randomSolPoint);
 
-                if(rnd < PAR) {
+                rnd2 = random.nextDouble();
+
+                if(rnd2 < PAR) {
 
                     // random +1 or -1
                     while (newHarmony.contains(randomSolPoint)) {
@@ -195,6 +199,7 @@ public class Project2 {
                 randomSolPoint = random.nextInt(1, tspMap.size()+1);
             }
 
+
             // if random sol point contains, random one
             Integer c = 0;
             while (newHarmony.contains(randomSolPoint)) {
@@ -205,6 +210,9 @@ public class Project2 {
             }
 
             newHarmony.add(i, randomSolPoint);
+
+            System.out.println("rnd1 = " + rnd1 + ", rnd2 = " + rnd2 + ", select point = " + randomSolPoint + ", sol = " + newHarmony);
+
         }
 
         return newHarmony;
