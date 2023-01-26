@@ -108,6 +108,7 @@ public class Project2 {
 
 
         //按从小到大排序，第一个是最小的
+        //Sorted from small to large, the first is the smallest
         hmsArr.sort(getComparator());
         for (ArrayList<Integer> arrayList : hmsArr) {
             hmsMap.put(score(arrayList), arrayList);
@@ -173,6 +174,8 @@ public class Project2 {
                 randomSolPoint = randomSol.get(random.nextInt(0, tspMap.size()));
 
                 if(rnd < PAR) {
+
+                    // random +1 or -1
                     while (newHarmony.contains(randomSolPoint)) {
 
                         randomSolPoint = random.nextDouble(0, 1) > 0.5 ? randomSolPoint + 1 : randomSolPoint - 1;
@@ -192,6 +195,7 @@ public class Project2 {
                 randomSolPoint = random.nextInt(1, tspMap.size()+1);
             }
 
+            // if random sol point contains, random one
             Integer c = 0;
             while (newHarmony.contains(randomSolPoint)) {
                 c++;
